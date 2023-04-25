@@ -1,0 +1,75 @@
+
+root = tk.Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.geometry(f"{screen_width}x{screen_height}")
+
+main_frame = tk.Frame(root)
+main_frame.pack(fill=tk.BOTH, expand=True)
+
+canvas = tk.Canvas(main_frame)
+canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+x_scrollbar = tk.Scrollbar(main_frame, orient=tk.HORIZONTAL, command=canvas.xview)
+x_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+y_scrollbar = tk.Scrollbar(main_frame, orient=tk.VERTICAL, command=canvas.yview)
+y_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+canvas.configure(xscrollcommand=x_scrollbar.set, yscrollcommand=y_scrollbar.set)
+canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+content_frame = tk.Frame(canvas)
+label_country_code = tk.Label(content_frame, text="Country Code:")
+
+label_country_code.grid(row=0, column=0)
+entry_country_code = tk.Entry(content_frame)
+entry_country_code.grid(row=0, column=1)
+
+canvas.create_window((0, 0), window=content_frame, anchor=tk.NW)
+label_indicator_code = tk.Label(content_frame, text="Indicator Code:")
+label_indicator_code.grid(row=1, column=0)
+entry_indicator_code = tk.Entry(content_frame)
+entry_indicator_code.grid(row=1, column=1)
+
+button_plot = tk.Button(content_frame, text="Plot", command=on_plot_button_click)
+button_plot.grid(row=2, column=0)
+
+button_fetch_indicators = tk.Button(content_frame, text="Fetch Indicators", command=on_fetch_indicators_button_click)
+button_fetch_indicators.grid(row=2, column=1)
+
+scrollbar = tk.Scrollbar(content_frame)
+scrollbar.grid(row=3, column=2, sticky=tk.N + tk.S)
+
+listbox = tk.Listbox(content_frame, yscrollcommand=scrollbar.set, width=40, height=20)
+listbox.grid(row=3, column=0, columnspan=2, sticky=tk.W + tk.E + tk.N + tk.S)
+listbox.bind('<<ListboxSelect>>', on_indicator_select)  # Bind the on_indicator_select function to ListboxSelect event
+
+collection_tree = ttk.Treeview(content_frame)
+collection_tree.grid(row=3, column=6)
+entry_add_collection = tk.Entry(content_frame)
+entry_add_collection.grid(row=4, column=6)
+
+button_add_collection = tk.Button(content_frame, text="New Collection", command=on_add_collection_button_click)
+button_add_collection.grid(row=5, column=6)
+
+scrollbar.config(command=listbox.yview)
+
+search_label = tk.Label(content_frame, text="Search:")
+search_label.grid(row=4, column=0, sticky=tk.W)
+
+search_var = tk.StringVar()
+search_var.trace('w', on_search_text_change)
+
+search_entry = tk.Entry(content_frame, textvariable=search_var)
+search_entry.grid(row=4, column=1, sticky=tk.W + tk.E)
+
+entry_indicator_name = tk.Entry(content_frame)
+entry_indicator_name.grid(row=6, column=6, sticky=tk.W + tk.E)
+
+button_add_data = tk.Button(content_frame, text="Add data", command=on_add_data_button_click)
+button_add_data.grid(row=7, column=6)
+
+#button_regression = tk.Button(content_frame, text="Perform Regression", command=on_regression_button_click)
+#button_regression.grid(row=10, column=6)
+
+content_frame.mainloop()
