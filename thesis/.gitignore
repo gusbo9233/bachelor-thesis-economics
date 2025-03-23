@@ -40,4 +40,8 @@ ENV/
 .idea/
 .vscode/
 *.swp
-*.swo countries/
+*.swo
+
+# Project specific
+countries/
+timeSeries/
